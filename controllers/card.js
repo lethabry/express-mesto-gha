@@ -14,7 +14,7 @@ function createCard(req, res) {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданны некорректные данные при создании карточки' });
       } else {
-        res.status(500).send({ message: `${err.name} ${err.message}` });
+        res.status(500).send({ message: `${err.message}` });
       }
     });
 }
@@ -23,18 +23,24 @@ function deleteCard(req, res) {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ error: 'Запрашиваемая карточка не найдена' });
+        return res.status(404).send({ message: 'Запрашиваемая карточка не найдена' });
       }
       return res.send({ card });
     })
-    .catch((err) => res.status(500).send({ message: `${err.message}` }));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Переданны некорректные данные при удалении карточки' });
+      } else {
+        res.status(500).send({ message: `${err.message}` });
+      }
+    });
 }
 
 function putLikeCard(req, res) {
   Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ error: 'Запрашиваемая карточка не найдена' });
+        return res.status(404).send({ message: 'Запрашиваемая карточка не найдена' });
       }
       return res.send({ card });
     })
@@ -42,7 +48,7 @@ function putLikeCard(req, res) {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         res.status(400).send({ message: 'Переданны некорректные данные при добавлении лайка у карточки' });
       } else {
-        res.status(500).send({ message: `${err.name} ${err.message}` });
+        res.status(500).send({ message: `${err.message}` });
       }
     });
 }

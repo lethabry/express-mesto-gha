@@ -18,7 +18,7 @@ function getCurrentUser(req, res) {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Передано некорректное значение id пользователя' });
       } else {
-        res.status(500).send({ message: `${err.name} ${err.message}` });
+        res.status(500).send({ message: `${err.message}` });
       }
     });
 }
@@ -31,7 +31,7 @@ function createUser(req, res) {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданны некорректные данные при создании пользователя' });
       } else {
-        res.status(500).send({ message: `${err.name} ${err.message}` });
+        res.status(500).send({ message: `${err.message}` });
       }
     });
 }
@@ -44,7 +44,7 @@ function updateProfile(req, res) {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданны некорректные данные при редактировании профиля' });
       } else {
-        res.status(500).send({ message: `${err.name} ${err.message}` });
+        res.status(500).send({ message: `${err.message}` });
       }
     });
 }
@@ -57,7 +57,7 @@ function updateAvatar(req, res) {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданны некорректные данные при редактировании аватара' });
       } else {
-        res.status(500).send({ message: `${err.name} ${err.message}` });
+        res.status(500).send({ message: `${err.message}` });
       }
     });
 }

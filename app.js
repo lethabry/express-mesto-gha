@@ -20,4 +20,8 @@ app.use((req, res, next) => {
 app.use('/users', require('./routes/user'));
 app.use('/cards', require('./routes/card'));
 
+app.use((req, res) => {
+  res.status(404).send({ message: 'Страницы не существует' });
+});
+
 app.listen(PORT);
