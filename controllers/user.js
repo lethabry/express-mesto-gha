@@ -38,7 +38,7 @@ function createUser(req, res) {
 
 function updateProfile(req, res) {
   const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .then((card) => res.send({ card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -51,7 +51,7 @@ function updateProfile(req, res) {
 
 function updateAvatar(req, res) {
   const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
+  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((card) => res.send({ card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {

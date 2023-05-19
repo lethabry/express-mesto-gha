@@ -45,7 +45,7 @@ function deleteLikeCard(req, res) {
   Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true })
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ error: 'Запрашиваемая карточка не найдена' });
+        return res.status(404).send({ message: 'Запрашиваемая карточка не найдена' });
       }
       return res.send({ card });
     })
