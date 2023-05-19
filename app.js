@@ -1,9 +1,18 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 
 const { PORT = 3000 } = process.env;
 const app = express();
+
+const limiter = rateLimit({
+  windowMs: 900000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -16,6 +25,9 @@ app.use((req, res, next) => {
   };
   next();
 });
+
+app.use(limiter);
+app.use(helmet());
 
 app.use('/users', require('./routes/user'));
 app.use('/cards', require('./routes/card'));
