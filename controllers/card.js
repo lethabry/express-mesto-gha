@@ -38,7 +38,13 @@ function putLikeCard(req, res) {
       }
       return res.send({ card });
     })
-    .catch((err) => res.status(500).send({ message: `${err.message}` }));
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        res.status(400).send({ message: 'Переданны некорректные данные при добавлении лайка у карточки' });
+      } else {
+        res.status(500).send({ message: `${err.name} ${err.message}` });
+      }
+    });
 }
 
 function deleteLikeCard(req, res) {
@@ -49,7 +55,13 @@ function deleteLikeCard(req, res) {
       }
       return res.send({ card });
     })
-    .catch((err) => res.status(500).send({ message: `${err.message}` }));
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        res.status(400).send({ message: 'Переданны некорректные данные при удалении лайка у карточки' });
+      } else {
+        res.status(500).send({ message: `${err.name} ${err.message}` });
+      }
+    });
 }
 
 module.exports = {
