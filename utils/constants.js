@@ -1,7 +1,0 @@
-const ERROR_SERV = 500;
-const ERROR_VALID = 400;
-const ERROR_NOT_FOUND = 404;
-
-module.exports = {
-  ERROR_SERV, ERROR_VALID, ERROR_NOT_FOUND,
-};
