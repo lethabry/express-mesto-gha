@@ -5,7 +5,7 @@ function auth(req, res, next) {
   const token = req.cookies.jwt;
 
   if (!token) {
-    return new AuthError('Необходима авторизация');
+    throw new AuthError('Необходима авторизация');
   }
 
   let payload;
@@ -13,10 +13,10 @@ function auth(req, res, next) {
   try {
     payload = jwt.verify(token, 'secret_key');
   } catch (err) {
-    return new AuthError('Необходима авторизация');
+    throw new AuthError('Необходима авторизация');
   }
   req.user = payload;
-  return next();
+  next();
 }
 
 module.exports = { auth };
