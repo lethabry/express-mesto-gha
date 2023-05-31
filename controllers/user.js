@@ -22,7 +22,7 @@ function getCurrentUser(req, res, next) {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new ValidationError('Передано некорректное значение id пользователя');
+        return next(new ValidationError('Передано некорректное значение id пользователя'));
       }
       return next(err);
     });
@@ -38,7 +38,7 @@ function getUserById(req, res, next) {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new ValidationError('Передано некорректное значение id пользователя');
+        return next(new ValidationError('Передано некорректное значение id пользователя'));
       }
       return next(err);
     });
@@ -53,21 +53,21 @@ function createUser(req, res, next) {
     .then((hash) => {
       User.create({
         name, about, avatar, email, password: hash,
-      })
-        .then((user) => {
-          res.send({
-            name: user.name, about: user.about, avatar: user.avatar, email: user.email,
-          });
-        })
-        .catch((err) => {
-          if (err.name === 'ValidationError') {
-            next(new ValidationError('Переданны некорректные данные при создании пользователя'));
-          }
-          if (err.code === 11000) {
-            next(new DataMatchError('Почта уже занята'));
-          }
-          return next(err);
-        });
+      });
+    })
+    .then((user) => {
+      res.status(201).send({
+        name: user.name, about: user.about, avatar: user.avatar, email: user.email,
+      });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return next(new ValidationError('Переданны некорректные данные при создании пользователя'));
+      }
+      if (err.code === 11000) {
+        return next(new DataMatchError('Почта уже занята'));
+      }
+      return next(err);
     });
 }
 
@@ -77,7 +77,7 @@ function updateProfile(req, res, next) {
     .then((user) => res.send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new ValidationError('Переданны некорректные данные при редактировании пользователя');
+        return next(new ValidationError('Переданны некорректные данные при редактировании пользователя'));
       }
       return next(err);
     });
@@ -89,7 +89,7 @@ function updateAvatar(req, res, next) {
     .then((user) => res.send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new ValidationError('Переданны некорректные данные при редактировании аватара');
+        return next(new ValidationError('Переданны некорректные данные при редактировании аватара'));
       }
       return next(err);
     });

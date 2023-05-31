@@ -12,10 +12,10 @@ function getCards(req, res, next) {
 function createCard(req, res, next) {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
-    .then((card) => res.send({ card }))
+    .then((card) => res.status(201).send({ card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new ValidationError('Переданны некорректные данные при создании карточки');
+        return next(new ValidationError('Переданны некорректные данные при создании карточки'));
       }
       return next(err);
     });
@@ -32,7 +32,7 @@ function deleteCard(req, res, next) {
           .then(() => res.send({ card }))
           .catch((err) => {
             if (err.name === 'CastError') {
-              throw new ValidationError('Переданны некорректные данные при удалении карточки');
+              return next(new ValidationError('Переданны некорректные данные при удалении карточки'));
             }
             return next(err);
           });
@@ -53,7 +53,7 @@ function putLikeCard(req, res, next) {
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        throw new ValidationError('Переданны некорректные данные при добавлении лайка у карточки');
+        return next(new ValidationError('Переданны некорректные данные при добавлении лайка у карточки'));
       }
       return next(err);
     });
@@ -69,7 +69,7 @@ function deleteLikeCard(req, res, next) {
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        throw new ValidationError('Переданны некорректные данные при добавлении лайка у карточки');
+        return next(new ValidationError('Переданны некорректные данные при удалении лайка у карточки'));
       }
       return next(err);
     });

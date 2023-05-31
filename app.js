@@ -4,10 +4,12 @@ const bodyParser = require('body-parser');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
-const { celebrate, Joi, errors } = require('celebrate');
+const { celebrate, errors } = require('celebrate');
 
 const { createUser, login } = require('./controllers/user');
 const { auth } = require('./middlewares/auth');
+const NotFoundError = require('./utils/errors/NotFoundError');
+const { signInValidation, signUpValidation } = require('./middlewares/validation');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -29,20 +31,11 @@ app.use(helmet());
 app.use(cookieParser());
 
 app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().email().required(),
-    password: Joi.string().required().min(6),
-  }),
+  body: signInValidation,
 }), login);
 
 app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().regex(/^https?:\/\/?(www\.)?[a-zA-Z0-9-._~:/?#\\[\]@!$&'()*+,;=]+$/),
-    email: Joi.string().email().required(),
-    password: Joi.string().required().min(6),
-  }),
+  body: signUpValidation,
 }), createUser);
 
 app.use(auth);
@@ -50,8 +43,8 @@ app.use(auth);
 app.use('/users', require('./routes/user'));
 app.use('/cards', require('./routes/card'));
 
-app.use((req, res) => {
-  res.status(404).send({ message: 'Страницы не существует' });
+app.use((req, res, next) => {
+  next(new NotFoundError('Страницы не существует'));
 });
 
 app.use(errors());
