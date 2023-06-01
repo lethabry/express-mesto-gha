@@ -58,12 +58,12 @@ function createUser(req, res, next) {
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new ValidationError('Переданны некорректные данные при создании пользователя'));
+        return next(new ValidationError('Переданны некорректные данные при создании пользователя'));
       }
       if (err.code === 11000) {
-        next(new DataMatchError('Почта уже занята'));
+        return next(new DataMatchError('Почта уже занята'));
       }
-      next(err);
+      return next(err);
     });
 }
 
